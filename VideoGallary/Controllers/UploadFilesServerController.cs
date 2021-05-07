@@ -6,13 +6,33 @@ using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using VideoGallary.Models;
 
 namespace VideoGallary.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UploadFilesServer : ControllerBase
+    public class UploadFilesServerController : ControllerBase
     {
+        private readonly ApplicationDbContext _context;
+        public UploadFilesServerController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+        [HttpGet]
+        public IActionResult GetAllUsers()
+        {
+            try
+            {
+                var users = _context.Users.ToList();
+
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex}");
+            }
+        }
         [HttpPost, DisableRequestSizeLimit]
         public IActionResult Upload()
         {
